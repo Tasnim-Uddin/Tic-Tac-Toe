@@ -13,12 +13,6 @@ AI = 'O'
 def empty_cells():
     board = [[' ' for column in range(3)] for row in range(3)]
     return board
-    # empty = 0
-    # for row in range(0, 3):
-    #     for column in range(0, 3):
-    #         if board[row][column] == '':
-    #             empty += 1
-    # return empty
 
 
 # this will just choose a random move for the computer to make
@@ -50,7 +44,7 @@ def player_turn(board):
     while not (len(position) == 2 or 0 < x < 4 or 0 < y < 4 or board[x][y] == ' '):
         position = input("Enter the row followed by the column you would like to play: ")
 
-    board[x-1][y-1] = PLAYER
+    board[x - 1][y - 1] = PLAYER
 
     return board
 
@@ -75,19 +69,54 @@ def draw_board(board):
 
 
 def winner(board):
-    pass
+    game_end = False
+    line = 0
+
+    for row in range(0, 3):
+        for column in range(0, 3):
+            if board[row][column] == 'X' or board[row][column] == 'O':
+                if board[row][0] == board[row][1] == board[row][2]:
+                    line += 1
+                elif board[0][column] == board[1][column] == board[2][column]:
+                    line += 1
+                break
+            break
+
+    if board[0][0] == 'X' or board[0][0] == 'O':
+        if board[0][0] == board[1][1] == board[2][2]:
+            line += 1
+        elif board[0][2] == board[1][1] == board[2][0]:
+            line += 1
+
+    if line >= 1:
+        game_end = True
+
+    return game_end
+
 
 # this should put together all the functions we've done so far so that you can play against a computer which plays randomly
 # ai and human take turns to make moves
 def main():
     board = empty_cells()
     draw_board(board)
-    while True:
-        board = ai_turn(board)
-        draw_board(board)
-        board = player_turn(board)
-        draw_board(board)
+    starter = input("Would you like to start? ")
 
+    while starter.lower() != 'yes' and starter.lower() != 'no':
+        starter = input("Would you like to start? ")
+
+    if starter.lower() == 'yes':
+        while not winner(board):
+            board = player_turn(board)
+            draw_board(board)
+            board = ai_turn(board)
+            draw_board(board)
+
+    elif starter.lower() == 'no':
+        while not winner(board):
+            board = ai_turn(board)
+            draw_board(board)
+            board = player_turn(board)
+            draw_board(board)
 
 
 main()
